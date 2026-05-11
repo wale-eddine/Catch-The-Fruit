@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Catch The Fruit - Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- SLIDING THEME PANEL -->
+    <div id="themePanel" class="theme-panel" aria-hidden="true">
+        <h2>Select Theme</h2>
+        <button class="theme-option" data-theme="default">Classic</button>
+        <button class="theme-option" data-theme="halloween">Halloween</button>
+        <button class="theme-option" data-theme="christmas">Christmas</button>
+        <button class="theme-option" data-theme="pirate">Pirate</button>
+        <div style="height:12px"></div>
+        <button id="closeThemePanel" class="theme-close">Close</button>
+    </div>
+
+    <div class="game-container">
+        <!-- Header with Score Info -->
+        <div class="score-header">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <h1 class="game-title">
+                            <span>C</span><span>a</span><span>t</span><span>c</span><span>h</span><span>&ensp;</span>
+                            <span>t</span><span>h</span><span>e</span><span>&ensp;</span>
+                            <span>F</span><span>r</span><span>u</span><span>i</span><span>t</span>
+                        </h1>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="d-flex justify-content-end gap-4 align-items-center">
+                            <!-- info button -->
+                            <button id="infoBtn" class="info-btn" title="Game Info">ℹ️</button>
+
+                            <!-- theme button to open sliding panel -->
+                            <button id="themeBtn" class="mute-btn" title="Choose Theme">🎨</button>
+
+                            <!-- mute button -->
+                            <button id="muteBtn" class="mute-btn" title="Mute/Unmute">🔊</button>
+                            <!-- reset button -->
+                            <button id="resetBtn" class="mute-btn" title="Reset Game">🔄</button>
+
+                            <div class="score-box">
+                                <span class="score-label">Score</span>
+                                <span class="score-value" id="score">0</span>
+                            </div>
+                            <div class="score-box">
+                                <span class="score-label">Best Score</span>
+                                <span class="score-value" id="bestScore">0</span>
+                            </div>
+                            <div class="lives-box score-box">
+                                <span class="score-label">Lives</span>
+                                <div class="lives-value" id="lives"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Zone with Start Button Overlay -->
+        <div id="gameZone" class="game-zone">
+            <!-- Start Game Button -->
+            <div class="start-button-container" id="startButtonContainer">
+                <button id="startBtn" class="start-btn">START GAME</button>
+            </div>
+            <!--Player -->
+            <div id="basket" class="basket">🧺</div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal fade" id="gameOverModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content game-over-modal">
+                    <div class="modal-body text-center">
+                        <h2 class="modal-title mb-3">🎮 Game Over!</h2>
+                        <p class="final-score">Final Score: <strong id="finalScore">0</strong></p>
+                        <p class="best-score-msg" id="bestScoreMsg"></p>
+                        <div class="modal-record" id="recordMessage"></div>
+
+                        <!-- Open theme panel from Game Over -->
+                        <button class="again-btn" id="openThemeFromGame">Themes 🎨</button>
+
+                        <button type="button" class="again-btn" id="replayBtn">
+                            Play Again
+                        </button>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--game info modal -->
+        <div class="modal fade" id="gameInfoModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content game-info-modal">
+                    <div class="modal-header">
+                        <h2 class="modal-title">📖 How to Play</h2>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="info-section">
+                            <h4>🎯 Controls</h4>
+                            <p>Use <strong>Arrow Keys</strong> or move your <strong>Mouse/Touch</strong> to control the basket</p>
+                        </div>
+                        <div class="info-section">
+                            <h4>🏆 Scoring System</h4>
+                            <ul class="scoring-list">
+                                <li><span class="score-item">🍎/🍬/🎁/💰</span> = <span class="points">+10 points</span></li>
+                                <li><span class="score-item">Miss 1</span> = <span class="points">-5 points</span></li>
+                                <li><span class="score-item">Miss 3</span> = <span class="points">-1 life</span></li>
+                                <li><span class="score-item">🐝/👻/🪨/💣</span> = <span class="points">-1 life</span></li>
+                                <li><span class="score-item">❤️‍🩹/⚰️/🎅/🦜</span> = <span class="points">+1 life (max 3)</span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <h4>⚡ Game Speed</h4>
+                            <p>Game speeds up every <strong>100 points</strong> you score!</p>
+                        </div>
+                        <div class="info-section">
+                            <h4>❤️ Lives</h4>
+                            <p>Start with <strong>3 lives</strong>. Game ends when you lose them all.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements for all game sounds -->
+    <audio id="backgroundMusic" preload="auto" loop></audio>
+    <audio id="bonusSound" preload="auto"></audio>
+    <audio id="loseLifeSound" preload="auto"></audio>
+    <audio id="boostSound" preload="auto"></audio>
+    <audio id="losingSound" preload="auto"></audio>
+    <audio id="hoverSound" preload="auto"></audio>
+    <audio id="heartSound" preload="auto"></audio>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Game Script -->
+    <script src="script.js"></script>
+</body>
+</html>
